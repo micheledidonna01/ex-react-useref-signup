@@ -1,19 +1,24 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
 
-  const [nome, setNome] = useState("");
-  const [username, setUsername] = useState("");
-  const [pass, setPass] = useState("");
-  const [special, setSpecial] = useState("");
-  const [esperienza, setEsperienza] = useState(0);
-  const [description, setDescription] = useState("");
+  // const [nome, setNome] = useState("");//non controllato
+  const nomeRef =useRef();
+  const [username, setUsername] = useState("");//controllato
+  const [pass, setPass] = useState("");//controllato
+  // const [special, setSpecial] = useState("");//non controllato
+  const specialRef = useRef();
+  // const [esperienza, setEsperienza] = useState(0);//non controllato
+  const esperienzaRef = useRef(0);
+  // const [description, setDescription] = useState("");//non controllato
+  const descriptionRef = useRef("");
 
   const letters = "abcdefghijklmnopqrstuvwxyz".split('');
   const numbers = "0123456789".split('');
-  const symbols = "!@#$%^&*()-_=+[]{}|;:'\\" + ",.<>?/`~" + '"'.split('');
+  const symbols = ("!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~\"").split('');
 
   const validateName = (nome) => {
+    nome = nome.current.value.trim();
     const nomeArray = nome.split("");
     const areThereNumbers = nomeArray.some(char => numbers.includes(char));
     const areThereSymbols = nomeArray.some(char => symbols.includes(char));
@@ -21,7 +26,7 @@ function App() {
     if ( areThereLetters && !areThereNumbers && !areThereSymbols && nome.length >= 3) {
       return true;
     }
-    return false;
+    
   }
 
   const validatePass = (pass) => {
@@ -37,6 +42,7 @@ function App() {
 
 
   const validateDescription = (description) => {
+    description = description.current.value.trim();
     if (description.length >= 100 && description.length <= 1000) {
       return true;
     }
@@ -58,25 +64,25 @@ function App() {
   const handleSubmit = e => {
     e.preventDefault();
 
-    if (!validateName(nome) || !validateUsername(username) || !validatePass(pass) || special === "" || esperienza < 0 || !validateDescription(description)) {
+    if (!validateName(nomeRef) || !validateUsername(username) || !validatePass(pass) || specialRef === "" || esperienzaRef < 0 || !validateDescription(descriptionRef)) {
       alert("Per favore, compila il form correttamente.");
       return;
     }
     else{
       console.log(`
-      Nome: ${nome}
+      Nome: ${nomeRef.current.value}
       Username: ${username}
       Password: ${pass}
-      Specializzazione: ${special}
-      Esperienza: ${esperienza}
-      Descrizione: ${description}
+      Specializzazione: ${specialRef.current.value}
+      Esperienza: ${esperienzaRef.current.value}
+      Descrizione: ${descriptionRef.current.value}
       `);
-      setNome("");
-      setUsername("");
-      setPass("");
-      setSpecial("");
-      setEsperienza(0);
-      setDescription("");
+      // nomeRef.current.value = "";
+      // setUsername("");
+      // setPass("");
+      // specialRef.current.value = "";
+      // esperienzaRef.current.value = 0;
+      // descriptionRef.current.value = "";
     }
   }
 
@@ -85,10 +91,10 @@ function App() {
 
         <form onSubmit={handleSubmit} className="p-5 d-flex flex-wrap ">
           <div className="form-floating mb-3 col-6">
-            <input type="text" name="nome" value={nome} onChange={e => setNome(e.target.value)} className="form-control" />
+            <input type="text" name="nome" ref={nomeRef} className="form-control" />
             <label htmlFor="nome" className="floatingInput">Inserisci nome
             </label>
-            {nome === "" ? "" : validateName(nome) ? <div className="text-success">Nome valido</div> : <div className="text-danger">Il nome deve contenere almeno 3 caratteri, senza numeri o simboli</div>}
+            {/* {nomeRef === "" ? "" : validateName(nomeRef) ? <div className="text-success">Nome valido</div> : <div className="text-danger">Il nome deve contenere almeno 3 caratteri, senza numeri o simboli</div>} */}
             {/* {validateName(nome) ? <div className="text-success">Nome valido</div> : <div className="text-danger">Il nome deve contenere almeno 6 caratteri, senza numeri o simboli</div>} */}
           </div>
 
@@ -107,7 +113,7 @@ function App() {
           </div>
 
           <div className="form-floating mb-3 col-4">
-            <select name="special" value={special} onChange={e => setSpecial(e.target.value)} className="form-control">
+            <select name="special" ref={specialRef} className="form-control">
               <option value="">---</option>
               <option value="fullstack">Full Stack</option>
               <option value="frontend">Frontend</option>
@@ -115,23 +121,24 @@ function App() {
             </select>
             <label htmlFor="special" className="floatingInput">Inserisci specializzazione
             </label>
-            {special === "" ? <div className="text-danger">Seleziona una specializzazione</div> : ""}
+            {/* {special === "" ? <div className="text-danger">Seleziona una specializzazione</div> : ""} */}
           </div>
 
           <div className="form-floating mb-3 col-2">
-            <input type="number" name="esperienza" value={esperienza} onChange={e => setEsperienza(e.target.value)} className="form-control" />
+            <input type="number" name="esperienza" ref={esperienzaRef} className="form-control" min="1" max="5"/>
             <label htmlFor="esperienza" className="floatingInput"> esperienza anni
             </label>
-            {esperienza < 0 ? <div className="text-danger">L'esperienza non può essere negativa</div> : ""}
+            {/* {esperienzaRef < 0 ? <div className="text-danger">L'esperienza non può essere negativa</div> : ""} */}
           </div>
 
           <div className="form-floating mb-3 col-12">
-            <textarea name="description" id="" value={description} onChange={e => setDescription(e.target.value)} className="form-control"></textarea>
+            <textarea name="description" ref={descriptionRef} className="form-control" rows="10"></textarea>
             <label htmlFor="description" className="floatingInput">piccola descrizione
             </label>
           </div>
-          {description === "" ? "" : validateDescription(description) ? <div className="text-success">Descrizione valida</div> : <div className="text-danger">La descrizione deve essere tra 100 e 1000 caratteri</div>}
-
+          {/* {descriptionRef.current.value === "" ? "" : validateDescription(descriptionRef) ? <div className="text-success">Descrizione valida</div> : <div className="text-danger">La descrizione deve essere tra 100 e 1000 caratteri</div>} */}
+          
+          {/* {validateDescription(descriptionRef) &&  <div className="text-danger">La descrizione deve essere tra 100 e 1000 caratteri</div>} */}
           <div className="col-12 d-flex justify-content-center">
             <button type="submit" className="btn btn-outline-primary">Invia form</button>
           </div>
