@@ -1,7 +1,11 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './App.css';
 function App() {
-
+  useEffect(() => {
+    nomeRef.current.focus();
+  }, []);
   // const [nome, setNome] = useState("");//non controllato
   const nomeRef =useRef();
   const [username, setUsername] = useState("");//controllato
@@ -86,10 +90,25 @@ function App() {
     }
   }
 
+  const resetForm = e => {
+    e.preventDefault();
+    nomeRef.current.value = "";
+    setUsername("");
+    setPass("");
+    specialRef.current.value = "";
+    esperienzaRef.current.value = 0;
+    descriptionRef.current.value = "";
+    nomeRef.current.focus();
+  }
+  
+  const goToStartForm = () => {
+  // Scroll to the top of the form 
+    nomeRef.current.scrollIntoView({ behavior: "smooth" });
+  }
     return (
       <>
 
-        <form onSubmit={handleSubmit} className="p-5 d-flex flex-wrap ">
+        <form onSubmit={handleSubmit} className="p-5 d-flex flex-wrap align-items-start">
           <div className="form-floating mb-3 col-6">
             <input type="text" name="nome" ref={nomeRef} className="form-control" />
             <label htmlFor="nome" className="floatingInput">Inserisci nome
@@ -139,11 +158,17 @@ function App() {
           {/* {descriptionRef.current.value === "" ? "" : validateDescription(descriptionRef) ? <div className="text-success">Descrizione valida</div> : <div className="text-danger">La descrizione deve essere tra 100 e 1000 caratteri</div>} */}
           
           {/* {validateDescription(descriptionRef) &&  <div className="text-danger">La descrizione deve essere tra 100 e 1000 caratteri</div>} */}
-          <div className="col-12 d-flex justify-content-center">
+          <div className="col-12 d-flex justify-content-between">
             <button type="submit" className="btn btn-outline-primary">Invia form</button>
+            <button className="btn btn-outline-secondary" onClick={resetForm}>Reset</button>
           </div>
 
         </form>
+        <div className="d-flex justify-content-end p-5 mt-5">
+
+        
+        <i className="bi bi-arrow-up bg-primary p-3 fs-2" onClick={goToStartForm}></i>
+        </div>
       </>
     )
   }
